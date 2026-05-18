@@ -76,7 +76,9 @@ The Vite dev server proxies every `/api/*` request to Express on port 4000, so t
 ```bash
 npm run build    # type-check + build both server and client
 npm start        # run the compiled server
-npm run seed     # restore the JSON store from the committed seed
+npm run seed     # restore the storage backend from server/data/shipments.json
+                 # writes to the JSON runtime file by default; if MONGODB_URI
+                 # is set it wipes + reinserts the seed into MongoDB instead.
 ```
 
 The root `dev` script uses `concurrently` to colour-code server and client logs side by side. `build` feeds both `tsc` (server) and `vite build` (client).
@@ -382,6 +384,7 @@ In local dev, `VITE_API_BASE_URL` stays empty and the Vite proxy handles `/api/*
 ```
 .
 ├── README.md                  this file
+├── AI_USAGE.md                honest AI workflow note
 ├── render.yaml                API service blueprint (Render)
 ├── package.json               workspaces root
 ├── server/
@@ -485,9 +488,66 @@ Open the Vercel URL. The dashboard loads with 8 seed shipments + stats. Sign in 
 ### Notes
 
 - **Render free tier sleeps** after ~15 min of inactivity; first request after sleep takes ~30 s.
-- **Filesystem is ephemeral** on Render free — JSON data resets on every restart. For real persistence, set `MONGODB_URI` in the Render env vars to a free [MongoDB Atlas](https://www.mongodb.com/cloud/atlas/register) cluster.
+- **Filesystem is ephemeral** on Render free — JSON data resets on every restart. For real persistence, set `MONGODB_URI` (see [MongoDB setup](#mongodb-setup-optional)).
 - **CORS** defaults to `*`. Tighten to your Vercel URL in production.
 - **TypeScript pinned to 5.4.5** in `server/package.json` to stay before the `moduleResolution: "node"` deprecation that turns into an error on some build environments.
+
+### MongoDB setup (optional)
+
+The default JSON repository is fine for the demo, but the repository pattern makes Mongo a single env-var flip. Free Atlas cluster + `MONGODB_URI` and the service swaps storage with zero code change.
+
+**Step 1 — Create a free Atlas cluster (~3 min)**
+
+1. Open <https://www.mongodb.com/cloud/atlas/register> and sign up.
+2. **Build a Database** → pick **M0 Free** → AWS, closest region → **Create Deployment**.
+3. Create a database user (username + password). Save the password.
+4. **Network Access** → **Add IP Address** → **Allow Access From Anywhere** (`0.0.0.0/0`). Production would lock this down, fine for a demo.
+5. **Database** → **Connect** → **Drivers** → copy the connection string. It looks like:
+   ```
+   mongodb+srv://<user>:<password>@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+   ```
+6. Replace `<password>` with the DB user password from step 3. Add a database name after `.net/` — e.g. `samex`:
+   ```
+   mongodb+srv://<user>:<password>@cluster0.xxxxx.mongodb.net/samex?retryWrites=true&w=majority
+   ```
+
+**Step 2 — Wire it in**
+
+Local:
+```bash
+# Add to server/.env
+MONGODB_URI=mongodb+srv://<user>:<password>@cluster0.xxxxx.mongodb.net/samex?retryWrites=true&w=majority
+
+# Seed the cluster from the committed seed file
+npm run seed
+
+# Run dev as usual
+npm run dev
+```
+
+On startup the API logs which backend it picked:
+```
+[samex-api] listening on http://localhost:4000  (storage: mongo)
+```
+
+Production (Render):
+1. Render dashboard → service → **Environment** → add `MONGODB_URI` with the same connection string.
+2. **Save Changes** → Render auto-restarts.
+3. Optional: trigger the seed once by running `npm run seed` from a local shell pointed at the same `MONGODB_URI`. The runtime would otherwise come up with an empty collection.
+
+**What changes under the hood**
+
+| | JSON | MongoDB |
+|---|---|---|
+| Repository class | `JsonShipmentsRepository` | `MongoShipmentsRepository` |
+| Storage | `server/data/shipments.runtime.json` | `samex.shipments` collection |
+| `findById` | linear scan in-memory | indexed by `_id` |
+| `countByStatus` | object reduce | aggregation pipeline (`$group` + `$sum`) |
+| Indexes | n/a | `trackingNumber` (unique), `status`, `destination` |
+| Concurrency safety | promise-chain mutex | server-side atomic updates |
+| Persistence | ephemeral on cloud free tiers | durable |
+
+The service, controller, and routes are unchanged.
 
 ### Alternative — single platform
 
@@ -513,7 +573,14 @@ In priority order:
 
 ---
 
+## Documentation
+
+| File | What it covers |
+|---|---|
+| [AI_USAGE.md](./AI_USAGE.md) | Honest note on tools used, where AI helped, where it failed, and how I verified the output (27 scripted curl tests). |
+
+---
+
 <div align="center">
 <sub>Internal demo build · no license · built with care.</sub>
 </div>
-
