@@ -26,6 +26,7 @@ Single-page **Shipment Tracker** with an Express API behind it.
   - Inline "Advance status" dropdown that only shows valid next states (mirrors server FSM)
   - Toast notifications, empty/loading/error states
 
+---
 
 
 ## 🚀 Quick start

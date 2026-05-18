@@ -7,7 +7,11 @@ services:
     runtime: node
     plan: free
     region: oregon
-    buildCommand: npm install && npm run build -w server
+    # NODE_ENV=production (set below for runtime) makes `npm install` skip
+    # devDependencies — and TypeScript / @types/* live there, so `tsc`
+    # would not be available and the build would fail. Force devDeps
+    # during the build phase explicitly.
+    buildCommand: NODE_ENV=development npm install --include=dev && npm run build -w server
     startCommand: npm run start -w server
     healthCheckPath: /api/health
     autoDeploy: true
