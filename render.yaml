@@ -1,0 +1,33 @@
+# Render blueprint — one-click deploy for the Samex.Delivery API.
+# After connecting the repo in Render, the dashboard reads this file
+# and provisions the service. Free tier; no credit card required.
+services:
+  - type: web
+    name: samex-api
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm install && npm run build -w server
+    startCommand: npm run start -w server
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 20.18.0
+      - key: NODE_ENV
+        value: production
+      - key: AUTH_USERNAME
+        value: admin
+      - key: AUTH_PASSWORD
+        generateValue: true
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 24h
+      # Render sets PORT automatically; the app reads it via env.port.
+      # CLIENT_ORIGIN is set after the client is deployed (e.g. https://<your-app>.vercel.app).
+      - key: CLIENT_ORIGIN
+        sync: false
+      # Optional: set MONGODB_URI to switch storage from JSON file to MongoDB.
+      - key: MONGODB_URI
+        sync: false
