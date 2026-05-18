@@ -1,6 +1,8 @@
 import cors from 'cors';
 import express from 'express';
+import fs from 'fs';
 import morgan from 'morgan';
+import path from 'path';
 import { env, useMongo } from './config/env';
 import { ShipmentsController } from './controllers/shipments.controller';
 import { errorHandler, notFoundHandler } from './middleware/error';
@@ -46,6 +48,17 @@ export async function buildApp() {
 
   app.use('/api/auth', buildAuthRouter());
   app.use('/api/shipments', buildShipmentsRouter(controller));
+
+  // Single-platform deploy: serve the built React client from the same
+  // origin. Looks for ../../client/dist (relative to compiled dist/app.js).
+  // Skips silently if the build is missing — useful in dev or API-only mode.
+  const clientDist = path.resolve(__dirname, '../../client/dist');
+  if (fs.existsSync(path.join(clientDist, 'index.html'))) {
+    app.use(express.static(clientDist, { index: false, maxAge: '1h' }));
+    app.get(/^\/(?!api\/).*/, (_req, res) => {
+      res.sendFile(path.join(clientDist, 'index.html'));
+    });
+  }
 
   app.use(notFoundHandler);
   app.use(errorHandler);
