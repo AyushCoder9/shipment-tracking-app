@@ -28,6 +28,8 @@ export async function buildApp() {
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean);
+  // eslint-disable-next-line no-console
+  console.log(`[samex-api] CORS allowlist: ${allowList.join(', ')}`);
   app.use(
     cors({
       origin: (origin, cb) => {

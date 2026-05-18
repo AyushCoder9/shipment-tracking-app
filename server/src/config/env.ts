@@ -14,7 +14,11 @@ function required(name: string, fallback?: string): string {
 export const env = {
   port: Number(process.env.PORT ?? 4000),
   nodeEnv: process.env.NODE_ENV ?? 'development',
-  clientOrigin: process.env.CLIENT_ORIGIN ?? 'http://localhost:5173',
+  // In production we serve the SPA from this same Express process, so the
+  // browser's Origin header equals the deploy URL. Allow everything by
+  // default and let operators tighten with CLIENT_ORIGIN when they want
+  // to. The dev server still uses :5173, which `*` also covers.
+  clientOrigin: process.env.CLIENT_ORIGIN ?? '*',
   auth: {
     username: required('AUTH_USERNAME', 'admin'),
     password: required('AUTH_PASSWORD', 'samex2026'),
