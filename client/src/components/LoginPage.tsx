@@ -27,7 +27,7 @@ export function LoginPage({ onClose }: { onClose?: () => void }) {
   };
 
   return (
-    <div className="min-h-screen w-full bg-mesh">
+    <div className="min-h-screen w-full bg-mesh dark:bg-slate-950">
       <div className="mx-auto grid min-h-screen max-w-6xl grid-cols-1 lg:grid-cols-5">
         {/* Brand panel */}
         <div className="relative hidden overflow-hidden bg-brand-gradient p-10 text-white lg:col-span-3 lg:flex lg:flex-col lg:justify-between">
@@ -78,8 +78,8 @@ export function LoginPage({ onClose }: { onClose?: () => void }) {
               </h1>
             </div>
 
-            <h2 className="text-2xl font-semibold text-slate-900">Welcome back</h2>
-            <p className="mt-1 text-sm text-slate-500">
+            <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">Welcome back</h2>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               Sign in to manage shipments and update statuses.
             </p>
 
@@ -112,7 +112,7 @@ export function LoginPage({ onClose }: { onClose?: () => void }) {
               </label>
 
               {error && (
-                <div className="flex items-start gap-2 rounded-xl bg-rose-50 px-3 py-2.5 text-sm text-rose-700 ring-1 ring-rose-200">
+                <div className="flex items-start gap-2 rounded-xl bg-rose-50 px-3 py-2.5 text-sm text-rose-700 ring-1 ring-rose-200 dark:bg-rose-500/10 dark:text-rose-300 dark:ring-rose-500/30">
                   <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0" />
                   <span>{error}</span>
                 </div>
@@ -130,9 +130,11 @@ export function LoginPage({ onClose }: { onClose?: () => void }) {
               )}
             </form>
 
-            <div className="mt-6 rounded-xl border border-dashed border-slate-300 bg-slate-50 px-3 py-2.5 text-center text-xs text-slate-600">
+            <div className="mt-6 rounded-xl border border-dashed border-slate-300 bg-slate-50 px-3 py-2.5 text-center text-xs text-slate-600 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-300">
               Demo credentials:{' '}
-              <span className="font-mono font-semibold text-slate-800">admin / samex2026</span>
+              <span className="font-mono font-semibold text-slate-800 dark:text-slate-100">
+                admin / samex2026
+              </span>
             </div>
           </div>
         </div>

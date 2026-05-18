@@ -56,11 +56,11 @@ export function CreateShipmentModal({ open, onClose, onSubmit }: Props) {
   return (
     <div className="fixed inset-0 z-40 flex items-center justify-center p-4 animate-fade-in">
       <div
-        className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+        className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
         onClick={onClose}
         aria-hidden="true"
       />
-      <div className="relative w-full max-w-lg animate-slide-up overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-slate-200">
+      <div className="relative w-full max-w-lg animate-slide-up overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
         {/* Header banner */}
         <div className="relative overflow-hidden bg-brand-gradient p-5 text-white">
           <div className="absolute inset-0 bg-mesh opacity-50" aria-hidden="true" />
@@ -147,7 +147,7 @@ export function CreateShipmentModal({ open, onClose, onSubmit }: Props) {
           </div>
 
           {error && (
-            <div className="flex items-start gap-2 rounded-xl bg-rose-50 px-3 py-2.5 text-sm text-rose-700 ring-1 ring-rose-200">
+            <div className="flex items-start gap-2 rounded-xl bg-rose-50 px-3 py-2.5 text-sm text-rose-700 ring-1 ring-rose-200 dark:bg-rose-500/10 dark:text-rose-300 dark:ring-rose-500/30">
               <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0" />
               <span>{error}</span>
             </div>

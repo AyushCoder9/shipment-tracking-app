@@ -23,22 +23,22 @@ let nextId = 1;
 
 const STYLES: Record<ToastKind, { bg: string; ring: string; icon: typeof CheckCircle2; iconColor: string }> = {
   success: {
-    bg: 'bg-white',
-    ring: 'ring-emerald-200',
+    bg: 'bg-white dark:bg-slate-900',
+    ring: 'ring-emerald-200 dark:ring-emerald-500/40',
     icon: CheckCircle2,
-    iconColor: 'text-emerald-600',
+    iconColor: 'text-emerald-600 dark:text-emerald-400',
   },
   error: {
-    bg: 'bg-white',
-    ring: 'ring-rose-200',
+    bg: 'bg-white dark:bg-slate-900',
+    ring: 'ring-rose-200 dark:ring-rose-500/40',
     icon: AlertCircle,
-    iconColor: 'text-rose-600',
+    iconColor: 'text-rose-600 dark:text-rose-400',
   },
   info: {
-    bg: 'bg-white',
-    ring: 'ring-slate-200',
+    bg: 'bg-white dark:bg-slate-900',
+    ring: 'ring-slate-200 dark:ring-slate-700',
     icon: Info,
-    iconColor: 'text-brand-600',
+    iconColor: 'text-brand-600 dark:text-brand-400',
   },
 };
 
@@ -80,11 +80,11 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               className={`pointer-events-auto flex items-start gap-3 rounded-xl ${bg} px-3.5 py-3 shadow-soft ring-1 ${ring} animate-slide-in-right`}
             >
               <Icon className={`mt-0.5 h-5 w-5 flex-shrink-0 ${iconColor}`} strokeWidth={2.2} />
-              <p className="flex-1 text-sm text-slate-700">{t.message}</p>
+              <p className="flex-1 text-sm text-slate-700 dark:text-slate-200">{t.message}</p>
               <button
                 type="button"
                 onClick={() => dismiss(t.id)}
-                className="rounded-md p-0.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+                className="rounded-md p-0.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"
                 aria-label="Dismiss"
               >
                 <X className="h-4 w-4" />

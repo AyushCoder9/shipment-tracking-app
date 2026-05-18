@@ -20,7 +20,7 @@ export function CopyButton({ text, label }: { text: string; label?: string }) {
       type="button"
       onClick={copy}
       title={copied ? 'Copied!' : `Copy ${label ?? 'value'}`}
-      className="inline-flex items-center justify-center rounded p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+      className="inline-flex items-center justify-center rounded p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-slate-300"
     >
       {copied ? (
         <Check className="h-3.5 w-3.5 text-emerald-600" strokeWidth={2.4} />
