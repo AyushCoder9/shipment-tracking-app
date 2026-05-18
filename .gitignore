@@ -14,7 +14,6 @@ coverage
 server/data/shipments.runtime.json
 
 # Documentation and Interview files
-AI_USAGE.md
 ARCHITECTURE.md
 DEPLOYMENT.md
 INTERVIEW_QA.md
